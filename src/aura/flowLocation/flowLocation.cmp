@@ -1,0 +1,109 @@
+<aura:component implements="lightning:availableForFlowScreens,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" 
+                access="global" 
+                controller="FlowLocationController">
+    
+    <!-- aura attributes to store map information -->
+    <aura:attribute name="mapMarkersData" type="Object"/>
+    <aura:attribute name="mapCenter" type="Object"/>
+    <aura:attribute name="mapMarkers" type="Object"/>
+    <aura:attribute name="zoomLevel" type="Integer" default="" />
+    <aura:attribute name="markersTitle" type="String" />
+    <aura:attribute name="showFooter" type="Boolean" default="false"/>
+    <aura:attribute name="isLoading" type="Boolean" default="false"/>
+    
+    <!-- component design attributes-->
+    <aura:attribute name="workTypeGroupId" type="String" />
+    <aura:attribute name="serviceTerritoryId" description="Work Type Group Id related to location" type="String" />
+    <aura:attribute name="state" description="Work Type Group Id related to location" type="String" />
+    <aura:attribute name="street" description="Work Type Group Id related to location" type="String" />
+    <aura:attribute name="city" description="Work Type Group Id related to location" type="String" />
+    <aura:attribute name="country" description="Work Type Group Id related to location" type="String" />
+    
+    <aura:attribute name="errorMessage" type="String" />
+    <aura:attribute name="isError" type="Boolean" default="false"/>
+    <aura:attribute name="optionsCity" type="List" access="PRIVATE"/>
+    <aura:attribute name="selectedValueCity" type="String" access="PRIVATE"/>
+    <aura:attribute name="optionsState" type="List" access="PRIVATE"/>
+    <aura:attribute name="selectedValueState" type="String" access="PRIVATE"/>
+    <aura:attribute name="optionsCountry" type="List" access="PRIVATE"/>
+    <aura:attribute name="selectedValueCountry" type="String" access="PRIVATE"/>
+    
+    <aura:attribute name="mobileAndDesktopStyling" access="private" type="Object"
+                    description="Classes for mobile and desktop sensitive styling" />
+    
+    <!-- init handler for component load-->
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+    
+    <aura:handler name="onLocationSelect" event="c:GoogleLocationSearchEvt" action="{!c.searchLocation}" />
+    
+    <!-- render map component only when we have at least 1 record in list.(mapMarkersData) --> 
+    <div class="slds-theme_default">
+        <div aura:id="top" tabIndex="-1" class="outline--none">
+            <h2 class="{! 'slds-text-align_center slds-m-vertical_small slds-text-color_default ' + v.mobileAndDesktopStyling.header}">
+                Select Service Territory</h2>
+        </div>
+        <div class="slds-align_absolute-center slds-grid slds-gutters slds-grid_align-center slds-wrap">
+            <!-- Below commented code is to search location using dropdown, instead of using geo codes.
+     If you do not have Google Maps API Key, you can still use below method of searching location-->
+            
+            <!-- <div class="slds-grid slds-gutters slds-grid_align-center slds-wrap">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                    <lightning:input name="Country" label="Enter a Country" required="true" value="{!v.country}"/>
+                    <lightning:select name="countryId" label="Select a Country:" aura:id="countryId" value="{!v.selectedValueCountry}">
+                        <aura:iteration items="{!v.optionsCountry}" var="option">
+                            <option text="{!option.label}" value="{!option.id}" selected="{!option.selected}"/>
+                        </aura:iteration>
+                    </lightning:select>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                    <lightning:input name="State" label="Enter a State" required="true" value="{!v.state}"/>
+                    <lightning:select name="stateId" label="Select a State:" aura:id="stateId" value="{!v.selectedValueState}">
+                        <aura:iteration items="{!v.optionsState}" var="option">
+                            <option text="{!option.label}" value="{!option.id}" selected="{!option.selected}"/>
+                        </aura:iteration>
+                    </lightning:select>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12">
+                    <lightning:input name="City" label="Enter a City" required="true" value="{!v.city}"/>
+                    <lightning:select name="cityId" label="Select a City:" aura:id="CityId" value="{!v.selectedValueCity}">
+                        <aura:iteration items="{!v.optionsCity}" var="option">
+                            <option text="{!option.label}" value="{!option.id}" selected="{!option.selected}"/>
+                        </aura:iteration>
+                    </lightning:select>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_3-of-12 slds-m-top_large">
+                    <lightning:button label="Search" iconName="utility:search" iconPosition="left"  variant="brand" onclick="{!c.searchLocation}"/>
+                </div>
+            </div>   -->
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_6-of-12 slds-m-bottom_small">
+                <c:GoogleLocationSearch/>
+            </div>
+        </div>
+        <p class="slds-grid slds-wrap">
+            <div class="slds-m-top_small slds-m-bottom_small slds-align_absolute-center">
+                <aura:if isTrue="{!v.mapMarkersData.length > 0}" > 
+                    <lightning:map mapMarkers="{! v.mapMarkersData }"
+                                   zoomLevel="{! v.zoomLevel }"
+                                   class = ""
+                                   markersTitle="{! v.markersTitle }"
+                                   showFooter="{ !v.showFooter }"
+                                   onmarkerselect="{!c.onMarkerSelect}"
+                                   listView="visible" />
+                    <aura:set attribute="else">
+                        <div class="">
+                            <img src="{!(v.isError) ? '/img/chatter/Desert.svg' : '/img/appointmentBooking/Preview.svg'}" class="slds-illustration__svg" />
+                        </div>
+                        <aura:if isTrue="{!v.isError}">
+                            <p class="slds-text-body_regular slds-m-vertical_small" aria-live="polite">
+                                {!v.errorMessage}
+                            </p>
+                        </aura:if>
+                    </aura:set>
+                </aura:if>
+            </div>
+        </p>
+    </div>
+    <aura:if isTrue="{!v.isLoading}" > 
+        <lightning:spinner alternativeText="{#$Label.Indicator.Loading}" size="large" variant="brand" />
+    </aura:if>
+</aura:component>

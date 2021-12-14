@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="Event template" >
+	<aura:attribute name="lat" type="String" />
+    <aura:attribute name="lng" type="String" />
+</aura:event>

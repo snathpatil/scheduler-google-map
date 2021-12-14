@@ -1,0 +1,56 @@
+<aura:component description="GoogleMapsSuggestions" controller="GoogleLocationSearchController">
+    <aura:attribute name="selectedOption" type="String"/>
+    <aura:attribute name="filteredOptions" type="String[]"/>
+    <aura:attribute name="searchKey" type="String"/>
+    <aura:attribute name="placeholder" type="String" default="Enter a location"/>
+    
+    <aura:registerEvent name="onLocationSelect" type="c:GoogleLocationSearchEvt" />
+    
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <div class="">
+                <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-combobox-lookup"
+                     aria-expanded="false"
+                     aria-haspopup="listbox"
+                     role="combobox"
+                     aura:id="searchLookup">
+                    <div class=" "
+                         aura:id="iconDirection">
+                        <span onkeypress="{!c.keyPressController}" class="slds-size--11-of-12">  
+                            <lightning:layoutItem size="12">
+                                <lightning:input aura:id="body"
+                                                 label="Enter an address, city, or ZIP code"
+                                                 name="Body"
+                                                 placeholder="Search location"
+                                                 value="{!v.searchKey}" type="search"/>
+                            </lightning:layoutItem>
+                        </span>   
+                    </div>
+                    
+                    <div id="listbox-unique-id" role="listbox">
+                        <ul class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid"
+                            role="option">
+                            
+                            <aura:iteration items="{!v.filteredOptions}" var="option">
+                                <li role="presentation"
+                                    class="slds-listbox__item"
+                                    onclick="{!c.selectOption}"
+                                    data-value="{!option.value}"
+                                    data-record="{!option.label}">
+                                    <span id="listbox-option-unique-id-01"
+                                          class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                          role="option">
+                                        <span class="slds-media__body">
+                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity">{!option.label}</span>
+                                        </span>
+                                    </span>
+                                </li>
+                            </aura:iteration>
+                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</aura:component>

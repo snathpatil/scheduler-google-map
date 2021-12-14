@@ -1,0 +1,8 @@
+<design:component>
+	<design:attribute name="workTypeGroupId" label="Work Type Group Id" description="Work Type Group Id related to location" />
+    <design:attribute name="serviceTerritoryId" label="ServiceTerritory Id" description="Work Type Group Id related to location" />
+    <design:attribute name="state" label="state" description="Work Type Group Id related to location" />
+    <design:attribute name="street" label="street" description="Work Type Group Id related to location" />
+    <design:attribute name="city" label="city" description="Work Type Group Id related to location" />
+    <design:attribute name="country" label="country" description="Work Type Group Id related to location" />
+</design:component>
