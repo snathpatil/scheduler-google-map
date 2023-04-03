@@ -7,4 +7,4 @@ This repository contains sample code for Google maps search for Service Territor
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
 
->For more details, visit [Unoffficial SF](https://unofficialsf.com/email-signature-booking/)
+>For more details, visit [From Shantinath Patil: Google Maps in Scheduler](https://unofficialsf.com/google-maps-in-scheduler/)
